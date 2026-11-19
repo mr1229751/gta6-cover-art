@@ -1,0 +1,226 @@
+/* styles.css — Leonida Posters editor chrome.
+   Dusk-violet surfaces, amber accents; the poster itself is drawn on the
+   canvas by src/render.js. The Anton face is a local file (SIL OFL), so
+   the app works with the network unplugged. */
+
+@font-face {
+  font-family: 'Anton';
+  src: url('fonts/Anton-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --ink: #0d0817;
+  --panel: #1a1129;
+  --panel-2: #241638;
+  --line: #3a2759;
+  --text: #f4ecdf;
+  --muted: #b9a8d4;
+  --amber: #ffb35c;
+  --gold: #ffd23f;
+  --pink: #ff2e88;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+body {
+  background:
+    radial-gradient(1100px 500px at 85% -10%, rgba(255, 46, 136, 0.22), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(255, 154, 60, 0.18), transparent 60%),
+    var(--ink);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+
+.roundel {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  display: grid;
+  place-items: center;
+  font-family: 'Anton', sans-serif;
+  font-size: 19px;
+  background: rgba(13, 8, 23, 0.7);
+}
+
+.brand h1 {
+  margin: 0;
+  font-family: 'Anton', sans-serif;
+  font-weight: 400;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.brand p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+
+.masthead-actions { display: flex; gap: 10px; }
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  padding: 18px 22px 22px;
+  align-items: start;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#preview {
+  width: 100%;
+  max-height: calc(100vh - 170px);
+  object-fit: contain;
+  background: #000;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--line);
+  cursor: grab;
+  touch-action: none;
+}
+
+#preview:active { cursor: grabbing; }
+
+.stage-hint { margin: 0; color: var(--muted); font-size: 13px; }
+
+.controls {
+  background: linear-gradient(180deg, var(--panel-2), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.group h2 {
+  margin: 0 0 10px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+button {
+  font: inherit;
+  font-size: 14px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: #2c1c47;
+  color: var(--text);
+  padding: 8px 13px;
+  cursor: pointer;
+}
+
+button:hover { border-color: var(--amber); }
+
+button.primary {
+  background: linear-gradient(180deg, #ff9a3c, #ff2e88);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
+button.ghost { background: transparent; }
+
+button.wide { width: 100%; }
+
+.tray {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tray-item {
+  padding: 0;
+  width: 62px;
+  height: 62px;
+  overflow: hidden;
+  border-radius: 7px;
+}
+
+.tray-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.tray-hint, .note { color: var(--muted); font-size: 12.5px; margin: 0; }
+
+.note { margin-top: 10px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px; }
+
+.chip.active {
+  background: var(--gold);
+  color: #241203;
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
+.field { display: block; margin-bottom: 11px; }
+
+.field span {
+  display: block;
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+
+.field input[type='text'], .field select {
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  background: #120b21;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.field input[type='range'] { width: 100%; accent-color: var(--pink); }
+
+/* Present mode: the cover alone, full-screen. */
+body.presenting .masthead,
+body.presenting .controls,
+body.presenting .stage-hint { display: none; }
+
+body.presenting .workspace {
+  grid-template-columns: 1fr;
+  padding: 0;
+  height: 100vh;
+}
+
+body.presenting #preview {
+  max-height: 100vh;
+  height: 100vh;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .workspace { grid-template-columns: 1fr; }
+}

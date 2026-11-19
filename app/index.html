@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leonida Posters — Cover Art Maker</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="brand">
+    <span class="roundel">LP</span>
+    <div>
+      <h1>Leonida Posters</h1>
+      <p>Cover art maker — your photos, poster panels, bold lettering, exported as a PNG.</p>
+    </div>
+  </div>
+  <div class="masthead-actions">
+    <button id="present" type="button" class="ghost">Present</button>
+    <button id="export" type="button" class="primary">Export PNG</button>
+  </div>
+</header>
+
+<main class="workspace">
+  <section class="stage" aria-label="Cover preview">
+    <canvas id="preview" width="960" height="540"></canvas>
+    <p class="stage-hint">Click a panel to select it · drag on the cover to frame its photo</p>
+  </section>
+
+  <aside class="controls" aria-label="Editor controls">
+    <div class="group">
+      <h2>1 · Photos</h2>
+      <div class="row">
+        <button id="add-photos" type="button" class="primary">Add your photos</button>
+        <button id="load-samples" type="button" class="ghost">Load samples</button>
+      </div>
+      <input id="file-input" type="file" accept="image/*" multiple hidden>
+      <div id="tray" class="tray"></div>
+      <p class="note">Photos are read on your machine only — nothing is uploaded.</p>
+    </div>
+
+    <div class="group">
+      <h2>2 · Panels</h2>
+      <div id="panels" class="chips"></div>
+      <label class="field">
+        <span>Photo zoom — selected panel</span>
+        <input id="zoom" type="range" min="1" max="2.6" step="0.01" value="1">
+      </label>
+      <button id="fill-all" type="button" class="ghost wide">Fill every panel with the selected photo</button>
+    </div>
+
+    <div class="group">
+      <h2>3 · Lettering</h2>
+      <label class="field">
+        <span>Caption</span>
+        <input id="caption" type="text" value="LEONIDA HEAT" maxlength="30" autocomplete="off">
+      </label>
+      <label class="field">
+        <span>Subtitle</span>
+        <input id="subtitle" type="text" value="VICE BEACH · EST. 2026" maxlength="44" autocomplete="off">
+      </label>
+    </div>
+
+    <div class="group">
+      <h2>4 · Look &amp; size</h2>
+      <label class="field">
+        <span>Layout</span>
+        <select id="layout">
+          <option value="poster" selected>Poster — hero, stack &amp; strip</option>
+          <option value="quad">Quad — four angled frames</option>
+          <option value="strips">Strips — three slanted columns</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Colour grade</span>
+        <select id="grade">
+          <option value="sunset" selected>Sunset — amber into magenta</option>
+          <option value="neon">Neon — cyan into pink</option>
+          <option value="noir">Noir — silver &amp; crushed blacks</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Export size</span>
+        <select id="size">
+          <option value="square">Square · 1080 × 1080</option>
+          <option value="portrait">Portrait · 1080 × 1350</option>
+          <option value="wide" selected>Wide · 1920 × 1080</option>
+        </select>
+      </label>
+    </div>
+  </aside>
+</main>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
