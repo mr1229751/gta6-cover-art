@@ -81,7 +81,21 @@ function applyGrade(ctx, gradeId, width, height) {
   };
   if (gradeId === 'sunset') {
     wash([[0, '#ff9a3c'], [0.55, '#ff2e88'], [1, '#2a0a44']], 'soft-light', 0.9);
-    wash([[0, '#ffd23f'], [1, '#ff5e3a']], 'overlay', 0.28);
+    // Sky-to-horizon grade: deep magenta settles over the top sky band
+    // and melts into warm amber at the horizon, so the poster glows like
+    // late golden hour instead of wearing one flat tint.
+    wash([[0, '#a81268'], [0.62, '#ff7a30'], [0.8, '#ffb347'], [1, '#3d0a33']], 'overlay', 0.34);
+    // A soft radial vignette pulls the frame corners down into dusk,
+    // throwing the caption and the hero panel forward at a glance.
+    const v = ctx.createRadialGradient(
+      width / 2, height * 0.46, Math.min(width, height) * 0.36,
+      width / 2, height * 0.5, Math.max(width, height) * 0.74,
+    );
+    v.addColorStop(0, 'rgba(24,2,26,0)');
+    v.addColorStop(0.72, 'rgba(24,2,26,0.18)');
+    v.addColorStop(1, 'rgba(24,2,26,0.52)');
+    ctx.fillStyle = v;
+    ctx.fillRect(0, 0, width, height);
   } else if (gradeId === 'neon') {
     wash([[0, '#00e5ff'], [0.5, '#7a5cff'], [1, '#ff00c8']], 'soft-light', 0.95);
     wash([[0, '#00fff2'], [1, '#ff2ea6']], 'overlay', 0.22);
@@ -99,6 +113,49 @@ function applyGrade(ctx, gradeId, width, height) {
   v.addColorStop(1, 'rgba(5,2,12,0.42)');
   ctx.fillStyle = v;
   ctx.fillRect(0, 0, width, height);
+
+  applyFilmGrain(ctx, width, height);
+}
+
+// A fixed grain tile, generated once from a seeded PRNG (mulberry32) so
+// every render of the same cover is byte-identical: the grain is part of
+// the artwork, never a dice roll between the preview and the export.
+let grainTile = null;
+function makeGrainTile() {
+  const size = 128;
+  const tile = document.createElement('canvas');
+  tile.width = size;
+  tile.height = size;
+  const tctx = tile.getContext('2d');
+  const img = tctx.createImageData(size, size);
+  let s = 0x2f6e2b1;
+  const next = () => {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  for (let i = 0; i < img.data.length; i += 4) {
+    const g = 96 + Math.floor(next() * 96); // mid-grey grain, never pure black or white
+    img.data[i] = g;
+    img.data[i + 1] = g;
+    img.data[i + 2] = g;
+    img.data[i + 3] = 255;
+  }
+  tctx.putImageData(img, 0, 0);
+  return tile;
+}
+
+// A whisper of film grain over the graded photos, laid down before the
+// lettering so the type stays clean: the panels feel printed, not pasted.
+function applyFilmGrain(ctx, width, height) {
+  if (!grainTile) grainTile = makeGrainTile();
+  ctx.save();
+  ctx.globalCompositeOperation = 'overlay';
+  ctx.globalAlpha = 0.07;
+  ctx.fillStyle = ctx.createPattern(grainTile, 'repeat');
+  ctx.fillRect(0, 0, width, height);
+  ctx.restore();
 }
 
 function legibilityBands(ctx, width, height) {
